@@ -56,7 +56,7 @@
             font-weight: bold;
             color: #8b4513;
         }
-       
+        
         table { 
             width: 100%; 
             border-collapse: collapse; 
@@ -76,7 +76,7 @@
         tr:hover { 
             background-color: #fff8f0; 
         }
-       
+        
         .status-btn { 
             background: #28a745; 
             color: white; 
@@ -98,7 +98,7 @@
             color: #666; 
             font-size: 0.88em; 
         }
-       
+        
         @media (max-width: 768px) {
             table, thead, tbody, th, td, tr { display: block; }
             th { display: none; }
@@ -152,7 +152,7 @@
 </div>
 
 <script>
-    // === YOUR FIREBASE CONFIG (already working) ===
+    // === YOUR FIREBASE CONFIG ===
     const firebaseConfig = {
       apiKey: "AIzaSyDUJGDr9lr4RIKypHiefHDeMTnwQ63-2V4",
       authDomain: "let-s-chicken.firebaseapp.com",
@@ -185,13 +185,16 @@
             revenue += parseFloat(order.total) || 0;
 
             const date = new Date(order.timestamp).toLocaleString('en-ZA');
+            
+            // Clean the product name by removing any price mentioned in the string (e.g. " - R50")
+            const cleanProduct = order.product.replace(/(\s*-\s*)?R\s?\d+(\.\d{2})?/, '').trim();
 
             const row = `
                 <tr>
                     <td data-label="Date">${date}</td>
                     <td data-label="Customer"><strong>${order.name}</strong></td>
                     <td data-label="Phone"><a href="tel:${order.phone}" style="color:#8b4513;">${order.phone}</a></td>
-                    <td data-label="Order">${order.product}</td>
+                    <td data-label="Order">${cleanProduct}</td>
                     <td data-label="Qty" style="text-align:center;">${order.quantity}</td>
                     <td data-label="Total"><strong>R${parseFloat(order.total).toFixed(2)}</strong></td>
                     <td data-label="Notes" class="notes">${order.notes || '—'}</td>
@@ -200,7 +203,7 @@
                     </td>
                 </tr>
             `;
-            orderList.insertAdjacentHTML('afterbegin', row); // newest first
+            orderList.insertAdjacentHTML('afterbegin', row); 
         });
 
         // Update stats
