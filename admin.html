@@ -5,45 +5,132 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Let's Chicken - Admin Dashboard</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f2f5; margin: 0; padding: 20px; }
-        .container { max-width: 1100px; margin: auto; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #8b4513; padding-bottom: 10px; margin-bottom: 20px; }
-        h1 { color: #8b4513; margin: 0; }
-        .stats { display: flex; gap: 20px; margin-bottom: 20px; }
-        .stat-card { background: #fff3e0; padding: 15px; border-radius: 8px; border-left: 5px solid #8b4513; flex: 1; }
-        
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th { background-color: #8b4513; color: white; text-align: left; padding: 12px; }
-        td { padding: 12px; border-bottom: 1px solid #ddd; font-size: 0.95em; }
-        tr:hover { background-color: #f9f9f9; }
-        
-        .status-btn { background: #28a745; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; }
-        .delete-btn { background: #dc3545; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; margin-left: 5px; }
-        .notes { font-style: italic; color: #666; font-size: 0.85em; }
-        
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: #f0f2f5; 
+            margin: 0; 
+            padding: 20px; 
+        }
+        .container { 
+            max-width: 1200px; 
+            margin: auto; 
+            background: white; 
+            padding: 25px; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1); 
+        }
+        header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            border-bottom: 3px solid #8b4513; 
+            padding-bottom: 15px; 
+            margin-bottom: 25px; 
+        }
+        h1 { 
+            color: #8b4513; 
+            margin: 0; 
+            font-size: 2.2em;
+        }
+        .stats { 
+            display: flex; 
+            gap: 20px; 
+            margin-bottom: 25px; 
+            flex-wrap: wrap;
+        }
+        .stat-card { 
+            background: #fff3e0; 
+            padding: 18px 22px; 
+            border-radius: 10px; 
+            border-left: 6px solid #8b4513; 
+            flex: 1; 
+            min-width: 220px;
+        }
+        .stat-card small {
+            display: block;
+            color: #666;
+            font-size: 0.9em;
+        }
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #8b4513;
+        }
+       
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin-top: 10px; 
+        }
+        th { 
+            background-color: #8b4513; 
+            color: white; 
+            text-align: left; 
+            padding: 14px 12px; 
+        }
+        td { 
+            padding: 14px 12px; 
+            border-bottom: 1px solid #ddd; 
+            font-size: 0.97em; 
+        }
+        tr:hover { 
+            background-color: #fff8f0; 
+        }
+       
+        .status-btn { 
+            background: #28a745; 
+            color: white; 
+            border: none; 
+            padding: 6px 12px; 
+            border-radius: 4px; 
+            cursor: pointer; 
+        }
+        .delete-btn { 
+            background: #dc3545; 
+            color: white; 
+            border: none; 
+            padding: 6px 12px; 
+            border-radius: 4px; 
+            cursor: pointer; 
+        }
+        .notes { 
+            font-style: italic; 
+            color: #666; 
+            font-size: 0.88em; 
+        }
+       
         @media (max-width: 768px) {
             table, thead, tbody, th, td, tr { display: block; }
             th { display: none; }
-            tr { margin-bottom: 15px; border: 1px solid #ccc; padding: 10px; }
-            td { border: none; padding: 5px; position: relative; padding-left: 50%; }
-            td:before { position: absolute; left: 10px; font-weight: bold; content: attr(data-label); }
+            tr { margin-bottom: 15px; border: 1px solid #ddd; padding: 12px; border-radius: 8px; }
+            td { border: none; padding: 8px 5px; position: relative; padding-left: 50%; }
+            td:before { 
+                position: absolute; 
+                left: 12px; 
+                font-weight: bold; 
+                content: attr(data-label); 
+                color: #8b4513;
+            }
         }
     </style>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 </head>
 <body>
-
 <div class="container">
     <header>
-        <h1>Admin Dashboard</h1>
-        <div id="orderCount" style="font-weight: bold;">Loading orders...</div>
+        <h1>Let's Chicken - Admin Dashboard</h1>
+        <div id="orderCount" style="font-weight: bold; font-size: 1.2em;">Loading orders...</div>
     </header>
 
     <div class="stats">
         <div class="stat-card">
             <small>Total Orders</small>
-            <div id="totalOrders" style="font-size: 1.5em; font-weight: bold;">0</div>
+            <div id="totalOrders" class="stat-value">0</div>
+        </div>
+        <div class="stat-card">
+            <small>Total Revenue</small>
+            <div id="totalRevenue" class="stat-value">R0.00</div>
         </div>
     </div>
 
@@ -60,13 +147,12 @@
                 <th>Actions</th>
             </tr>
         </thead>
-        <tbody id="orderList">
-            </tbody>
+        <tbody id="orderList"></tbody>
     </table>
 </div>
 
 <script>
-    // USE THE SAME CONFIG AS YOUR MAIN SITE
+    // === YOUR FIREBASE CONFIG (already working) ===
     const firebaseConfig = {
       apiKey: "AIzaSyDUJGDr9lr4RIKypHiefHDeMTnwQ63-2V4",
       authDomain: "let-s-chicken.firebaseapp.com",
@@ -81,24 +167,22 @@
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
 
-    // SIMPLE SECURITY (Optional: Remove if not needed)
-    const pass = prompt("Enter Admin Password:");
-    if(pass !== "chicken2026") { // Change 'chicken2026' to your preferred password
-        alert("Access Denied");
-        document.body.innerHTML = "<h1>Unauthorized Access</h1>";
-    }
-
-    // Fetch Orders in Real-time
+    // Real-time listener
     const ordersRef = database.ref('orders');
+    
     ordersRef.on('value', (snapshot) => {
         const orderList = document.getElementById('orderList');
-        orderList.innerHTML = ''; 
+        orderList.innerHTML = '';
+
         let count = 0;
+        let revenue = 0;
 
         snapshot.forEach((childSnapshot) => {
             const order = childSnapshot.val();
             const key = childSnapshot.key;
+
             count++;
+            revenue += parseFloat(order.total) || 0;
 
             const date = new Date(order.timestamp).toLocaleString('en-ZA');
 
@@ -106,30 +190,31 @@
                 <tr>
                     <td data-label="Date">${date}</td>
                     <td data-label="Customer"><strong>${order.name}</strong></td>
-                    <td data-label="Phone"><a href="tel:${order.phone}">${order.phone}</a></td>
+                    <td data-label="Phone"><a href="tel:${order.phone}" style="color:#8b4513;">${order.phone}</a></td>
                     <td data-label="Order">${order.product}</td>
-                    <td data-label="Qty">${order.quantity}</td>
-                    <td data-label="Total"><strong>${order.total}</strong></td>
-                    <td data-label="Notes" class="notes">${order.notes || '-'}</td>
+                    <td data-label="Qty" style="text-align:center;">${order.quantity}</td>
+                    <td data-label="Total"><strong>R${parseFloat(order.total).toFixed(2)}</strong></td>
+                    <td data-label="Notes" class="notes">${order.notes || '—'}</td>
                     <td data-label="Actions">
                         <button class="delete-btn" onclick="deleteOrder('${key}')">Remove</button>
                     </td>
                 </tr>
             `;
-            orderList.insertAdjacentHTML('afterbegin', row); // Newest orders at the top
+            orderList.insertAdjacentHTML('afterbegin', row); // newest first
         });
 
+        // Update stats
         document.getElementById('totalOrders').textContent = count;
-        document.getElementById('orderCount').textContent = count + " Orders Found";
+        document.getElementById('totalRevenue').textContent = 'R' + revenue.toFixed(2);
+        document.getElementById('orderCount').textContent = count + ' Orders Found';
     });
 
-    // Function to delete order
+    // Delete function
     function deleteOrder(key) {
-        if(confirm("Are you sure you want to remove this order from the list?")) {
+        if (confirm("Delete this order permanently?")) {
             database.ref('orders/' + key).remove();
         }
     }
 </script>
-
 </body>
 </html>
