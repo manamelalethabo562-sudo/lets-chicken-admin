@@ -236,6 +236,77 @@
             font-size: 0.9em; 
         }
 
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+        
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            transform: scale(0.8);
+            transition: all 0.3s ease;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.1);
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: scale(1);
+        }
+
+        .success-icon {
+            font-size: 4em;
+            color: var(--success);
+            margin-bottom: 20px;
+        }
+
+        .modal-content h2 {
+            margin: 0 0 10px;
+            color: var(--text-main);
+            font-weight: 700;
+        }
+
+        .modal-content p {
+            color: var(--text-muted);
+            margin-bottom: 25px;
+            font-size: 0.95em;
+        }
+
+        .close-modal-btn {
+            background: var(--success);
+            color: white;
+            border: none;
+            padding: 10px 30px;
+            border-radius: 50px;
+            font-size: 1em;
+            font-weight: 600;
+            font-family: 'Poppins', sans-serif;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
+        }
+
+        .close-modal-btn:hover {
+            background: #27ae60;
+            transform: translateY(-2px);
+        }
+
         /* Responsive Table */
         @media (max-width: 768px) {
             .container { padding: 20px; }
@@ -310,12 +381,22 @@
                     <th>Order</th>
                     <th>Qty</th>
                     <th>Total</th>
-                    <th>Status</th> <th>Notes</th>
+                    <th>Status</th>
+                    <th>Notes</th>
                     <th>Actions</th>
                 </tr>
             </thead>
             <tbody id="orderList"></tbody>
         </table>
+    </div>
+</div>
+
+<div class="modal-overlay" id="successModal">
+    <div class="modal-content">
+        <i class="fas fa-check-circle success-icon"></i>
+        <h2>Order Completed!</h2>
+        <p>The order status has been successfully updated.</p>
+        <button class="close-modal-btn" onclick="closeModal()">Awesome!</button>
     </div>
 </div>
 
@@ -394,14 +475,28 @@
         document.getElementById('orderCount').innerHTML = `<i class="fas fa-check-circle"></i> ${count} Orders Found`;
     });
 
-    // Update Status function
+    // Update Status function with Promise handling for Modal
     function updateOrderStatus(key, newStatus) {
         database.ref('orders/' + key).update({
             status: newStatus
+        }).then(() => {
+            // Trigger the success modal ONLY if marked as completed
+            if (newStatus === 'completed') {
+                showModal();
+            }
         }).catch((error) => {
             console.error("Error updating order status:", error);
             alert("Failed to update status. Please try again.");
         });
+    }
+
+    // Modal Control Functions
+    function showModal() {
+        document.getElementById('successModal').classList.add('active');
+    }
+
+    function closeModal() {
+        document.getElementById('successModal').classList.remove('active');
     }
 
     // Delete function
