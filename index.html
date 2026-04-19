@@ -18,6 +18,8 @@
             --text-muted: #7f8c8d;
             --danger: #ff4757;
             --danger-hover: #ff6b81;
+            --success: #2ecc71;
+            --warning: #f39c12;
         }
 
         body { 
@@ -179,6 +181,31 @@
             text-decoration: underline;
         }
 
+        /* Status Dropdown Styling */
+        .status-select {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.85em;
+            font-weight: 600;
+            cursor: pointer;
+            outline: none;
+            border: 1px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .status-select.processing {
+            background-color: #fff3e0;
+            color: var(--warning);
+            border-color: var(--warning);
+        }
+
+        .status-select.completed {
+            background-color: #e8f8f5;
+            color: var(--success);
+            border-color: var(--success);
+        }
+
         /* Pill shaped buttons */
         .delete-btn { 
             background: var(--danger); 
@@ -283,7 +310,7 @@
                     <th>Order</th>
                     <th>Qty</th>
                     <th>Total</th>
-                    <th>Notes</th>
+                    <th>Status</th> <th>Notes</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -332,6 +359,9 @@
             
             // Clean the product name
             const cleanProduct = order.product.replace(/(\s*-\s*)?R\s?\d+(\.\d{2})?/, '').trim();
+            
+            // Fetch status, defaulting to 'processing' if it doesn't exist yet
+            const currentStatus = order.status || 'processing';
 
             const row = `
                 <tr>
@@ -341,6 +371,12 @@
                     <td data-label="Order">${cleanProduct}</td>
                     <td data-label="Qty"><strong>${order.quantity}x</strong></td>
                     <td data-label="Total" style="color: #2ecc71; font-weight: 700;">R${parseFloat(order.total).toFixed(2)}</td>
+                    <td data-label="Status">
+                        <select class="status-select ${currentStatus}" onchange="updateOrderStatus('${key}', this.value)">
+                            <option value="processing" ${currentStatus === 'processing' ? 'selected' : ''}>Processing</option>
+                            <option value="completed" ${currentStatus === 'completed' ? 'selected' : ''}>Completed</option>
+                        </select>
+                    </td>
                     <td data-label="Notes" class="notes">${order.notes || '—'}</td>
                     <td data-label="Actions">
                         <button class="delete-btn" onclick="deleteOrder('${key}')">
@@ -357,6 +393,16 @@
         document.getElementById('totalRevenue').textContent = 'R' + revenue.toFixed(2);
         document.getElementById('orderCount').innerHTML = `<i class="fas fa-check-circle"></i> ${count} Orders Found`;
     });
+
+    // Update Status function
+    function updateOrderStatus(key, newStatus) {
+        database.ref('orders/' + key).update({
+            status: newStatus
+        }).catch((error) => {
+            console.error("Error updating order status:", error);
+            alert("Failed to update status. Please try again.");
+        });
+    }
 
     // Delete function
     function deleteOrder(key) {
